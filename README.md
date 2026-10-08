@@ -51,6 +51,8 @@ Unter *Einstellungen → Table Colors*:
 
 Außerdem: **Kompakte Tabellen** (standardmäßig an) entfernt in Live Preview den Abstand, den Obsidian über Tabellen für die Spalten-Ziehgriffe reserviert. Tabellen beginnen dann wie Callouts direkt unter der vorherigen Zeile; die Griffe liegen als schmale Leiste an der Oberkante der Kopfzeile.
 
+**Leerzeile über Tabellen ausblenden** (standardmäßig an): Obsidian erkennt Tabellen nur mit einer Leerzeile davor und fügt sie beim Schreiben automatisch ein. Das Plugin lässt sie im Markdown stehen, blendet sie in Live Preview aber aus, solange der Cursor nicht darin steht.
+
 Die Farben der Palette *Theme* folgen dem aktiven Obsidian-Theme, bis man sie im Picker ändert.
 Eigene Farben sind in den Plugin-Einstellungen des Vaults gespeichert – in einem anderen Vault wirken ihre Marker erst, wenn dort eine Farbe mit derselben ID existiert.
 

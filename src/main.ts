@@ -49,7 +49,7 @@ export default class TableColorsPlugin extends Plugin {
     this.registerEvent(this.app.workspace.on("window-open", (win) => this.injectStyles(win.doc)));
     this.register(() =>
       this.styleEls.forEach((el) => {
-        el.ownerDocument.body.removeClass("tc-compact-tables");
+        this.applyBodyClasses(el.ownerDocument, false);
         el.remove();
       }),
     );
@@ -147,7 +147,7 @@ export default class TableColorsPlugin extends Plugin {
   private injectStyles(doc: Document) {
     const el = doc.head.createEl("style", { attr: { id: "table-colors-dynamic" } });
     el.textContent = buildCss(this.settings);
-    doc.body.toggleClass("tc-compact-tables", this.settings.compactTables);
+    this.applyBodyClasses(doc);
     this.styleEls.push(el);
   }
 
@@ -156,8 +156,14 @@ export default class TableColorsPlugin extends Plugin {
     this.styleEls = this.styleEls.filter((el) => el.isConnected);
     for (const el of this.styleEls) {
       el.textContent = css;
-      el.ownerDocument.body.toggleClass("tc-compact-tables", this.settings.compactTables);
+      this.applyBodyClasses(el.ownerDocument);
     }
+  }
+
+  /** Schalter aus den Einstellungen als Klassen am <body>, damit styles.css sie nutzen kann. */
+  private applyBodyClasses(doc: Document, enabled = true) {
+    doc.body.toggleClass("tc-compact-tables", enabled && this.settings.compactTables);
+    doc.body.toggleClass("tc-hide-table-gap", enabled && this.settings.hideTableGap);
   }
 
   /** Hintergrund einer Farbe für einen bestimmten Modus (für Vorschauen). */

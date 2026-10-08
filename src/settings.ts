@@ -9,6 +9,7 @@ export interface TableColorsSettings {
   alphaDark: number;
   maxCols: number;
   compactTables: boolean;
+  hideTableGap: boolean;
 }
 
 export const DEFAULT_SETTINGS: TableColorsSettings = {
@@ -17,6 +18,7 @@ export const DEFAULT_SETTINGS: TableColorsSettings = {
   alphaDark: PALETTES[0].alphaDark,
   maxCols: 20,
   compactTables: true,
+  hideTableGap: true,
 };
 
 export class TableColorsSettingTab extends PluginSettingTab {
@@ -89,6 +91,19 @@ export class TableColorsSettingTab extends PluginSettingTab {
       .addToggle((t) =>
         t.setValue(s.compactTables).onChange(async (v) => {
           s.compactTables = v;
+          await this.plugin.saveSettings();
+        }),
+      );
+
+    new Setting(containerEl)
+      .setName("Leerzeile über Tabellen ausblenden")
+      .setDesc(
+        "Obsidian braucht über jeder Tabelle eine Leerzeile und fügt sie beim Schreiben automatisch ein. " +
+          "Sie bleibt im Markdown erhalten, wird in Live Preview aber ausgeblendet, solange der Cursor nicht darin steht.",
+      )
+      .addToggle((t) =>
+        t.setValue(s.hideTableGap).onChange(async (v) => {
+          s.hideTableGap = v;
           await this.plugin.saveSettings();
         }),
       );

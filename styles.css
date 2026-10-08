@@ -39,3 +39,14 @@ body.tc-compact-tables .markdown-source-view.mod-cm6 .cm-table-widget .table-col
   border-radius: 0;
   z-index: 1;
 }
+
+/* Leerzeile über Tabellen ausblenden (Live Preview): Obsidian erkennt eine Tabelle nur mit
+ * einer Leerzeile davor und fügt sie beim Schreiben automatisch ein. Die Zeile bleibt im
+ * Markdown erhalten, wird aber auf Höhe 0 gesetzt – außer der Cursor steht darin. */
+body.tc-hide-table-gap .markdown-source-view.is-live-preview .cm-content > .cm-line:has(> br):has(+ .cm-table-widget):not(.cm-active, .cm-activeLine) {
+  height: 0;
+  min-height: 0;
+  margin-block: 0;
+  padding-block: 0;
+  overflow: hidden;
+}
