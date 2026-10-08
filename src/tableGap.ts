@@ -3,12 +3,8 @@
 /** Abstand über Tabellen in Live Preview. */
 export type TableGap = "blank-line" | "none" | "handle" | "custom";
 
-export const TABLE_GAP_OPTIONS: Record<TableGap, string> = {
-  "blank-line": "Eine Leerzeile",
-  none: "Kein Abstand",
-  handle: "Wie unten (Platz für Ziehgriffe)",
-  custom: "Custom",
-};
+/** Reihenfolge im Dropdown; Beschriftung kommt aus der Übersetzung "gap.<option>". */
+export const TABLE_GAPS: TableGap[] = ["blank-line", "none", "handle", "custom"];
 
 /** Grenzen des Reglers für „Custom“ (Pixel). */
 export const CUSTOM_GAP_MIN = 0;
@@ -21,7 +17,7 @@ export const CUSTOM_GAP_DEFAULT = 8;
  * - Zwischenstand vor 0.3.0 hatte zusätzlich `hideTableGap`.
  */
 export function migrateTableGap(data: Record<string, unknown>): TableGap | undefined {
-  if (typeof data.tableGap === "string" && data.tableGap in TABLE_GAP_OPTIONS) return data.tableGap as TableGap;
+  if (TABLE_GAPS.includes(data.tableGap as TableGap)) return data.tableGap as TableGap;
   if ("hideTableGap" in data) {
     if (data.hideTableGap === false) return "blank-line";
     return data.compactTables === false ? "handle" : "none";

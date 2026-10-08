@@ -7,41 +7,29 @@ export type ColorValue = string;
 export interface TableColor {
   /** Teil des Markers, z. B. "red" -> <span class="cell-red"></span>. Unveränderlich. */
   id: string;
+  /** Eigener Name; leer = übersetzter Name der Standardfarbe (siehe i18n.colorLabel). */
   label: string;
   light: ColorValue;
   dark: ColorValue;
 }
 
 export interface Palette {
+  /** Name kommt aus der Übersetzung "palette.<id>". */
   id: string;
-  name: string;
   /** Empfohlene Deckkraft – wird beim Anwenden übernommen. */
   alphaLight: number;
   alphaDark: number;
   colors: TableColor[];
 }
 
-const LABELS: Record<string, string> = {
-  red: "Rot",
-  orange: "Orange",
-  yellow: "Gelb",
-  green: "Grün",
-  cyan: "Cyan",
-  blue: "Blau",
-  purple: "Lila",
-  pink: "Pink",
-  gray: "Grau",
-};
-
 /** Hilfsfunktion: { id: [hell, dunkel] } -> TableColor[] */
 function colors(values: Record<string, [ColorValue, ColorValue]>): TableColor[] {
-  return Object.entries(values).map(([id, [light, dark]]) => ({ id, label: LABELS[id] ?? id, light, dark }));
+  return Object.entries(values).map(([id, [light, dark]]) => ({ id, label: "", light, dark }));
 }
 
 export const PALETTES: Palette[] = [
   {
     id: "theme",
-    name: "Theme (Standard)",
     alphaLight: 0.25,
     alphaDark: 0.25,
     colors: colors({
@@ -58,7 +46,6 @@ export const PALETTES: Palette[] = [
   },
   {
     id: "pastel",
-    name: "Pastell",
     alphaLight: 0.8,
     alphaDark: 0.3,
     colors: colors({
@@ -75,7 +62,6 @@ export const PALETTES: Palette[] = [
   },
   {
     id: "vivid",
-    name: "Kräftig",
     alphaLight: 0.3,
     alphaDark: 0.35,
     colors: colors({
@@ -92,7 +78,6 @@ export const PALETTES: Palette[] = [
   },
   {
     id: "okabe-ito",
-    name: "Farbenblind-freundlich (Okabe-Ito)",
     alphaLight: 0.35,
     alphaDark: 0.4,
     colors: colors({

@@ -1,5 +1,7 @@
 # Table Prettifier
 
+*English UI available: the plugin follows Obsidian's language (German or English).*
+
 Obsidian-Plugin zum Einfärben von **Zellen, Zeilen und Spalten** in Markdown-Tabellen – per Rechtsklick-Menü, Befehl/Tastenkürzel oder direkt im Quelltext.
 
 ## Benutzung
@@ -8,6 +10,8 @@ Obsidian-Plugin zum Einfärben von **Zellen, Zeilen und Spalten** in Markdown-Ta
 
 Rechtsklick auf eine Tabellenzelle → **Zelle färben**, **Zeile färben** oder **Spalte färben** → Farbe wählen.
 **Tabellenfarben entfernen** löscht alle Farben der Tabelle.
+
+**Mehrere Zellen auf einmal:** Markiere in Live Preview mehrere Zellen (wie gewohnt per Ziehen oder Shift-Klick) und klicke mit rechts in die Auswahl. *Zellen färben* färbt dann alle markierten Zellen, *Zeilen/Spalten färben* alle betroffenen Zeilen bzw. Spalten – das Menü zeigt die Anzahl an. Auch die Befehle und Shortcuts wirken auf die Auswahl; im Source-Modus gilt das markierte Rechteck.
 
 ### Befehle und Tastenkürzel
 

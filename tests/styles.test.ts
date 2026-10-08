@@ -29,7 +29,7 @@ test("buildCss trennt Light und Dark Mode", () => {
 
 test("Alle Paletten haben dieselben IDs", () => {
   const ids = PALETTES[0].colors.map((c) => c.id).join();
-  for (const p of PALETTES) assert.equal(p.colors.map((c) => c.id).join(), ids, p.name);
+  for (const p of PALETTES) assert.equal(p.colors.map((c) => c.id).join(), ids, p.id);
 });
 
 test("applyPalette ersetzt Standardfarben und behält eigene", () => {

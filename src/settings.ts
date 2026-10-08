@@ -2,7 +2,8 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import type TableColorsPlugin from "./main";
 import { PALETTES, TableColor, applyPalette } from "./palettes";
 import { CustomColorModal, toHex } from "./modals";
-import { CUSTOM_GAP_DEFAULT, CUSTOM_GAP_MAX, CUSTOM_GAP_MIN, TABLE_GAP_OPTIONS, TableGap } from "./tableGap";
+import { CUSTOM_GAP_DEFAULT, CUSTOM_GAP_MAX, CUSTOM_GAP_MIN, TABLE_GAPS, TableGap } from "./tableGap";
+import { I18nKey, colorLabel, defaultColorLabels, t } from "./i18n";
 
 export interface TableColorsSettings {
   colors: TableColor[];
@@ -38,11 +39,11 @@ export class TableColorsSettingTab extends PluginSettingTab {
     this.painters = [];
 
     // ---------- Darstellung ----------
-    new Setting(containerEl).setName("Darstellung").setHeading();
+    new Setting(containerEl).setName(t("settings.appearance")).setHeading();
 
     new Setting(containerEl)
-      .setName("Deckkraft im hellen Modus")
-      .setDesc("Wie kräftig die Farben im Light Mode erscheinen.")
+      .setName(t("settings.alphaLight"))
+      .setDesc(t("settings.alphaLight.desc"))
       .addSlider((sl) =>
         sl
           .setLimits(0.05, 1, 0.05)
@@ -56,8 +57,8 @@ export class TableColorsSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Deckkraft im dunklen Modus")
-      .setDesc("Wie kräftig die Farben im Dark Mode erscheinen.")
+      .setName(t("settings.alphaDark"))
+      .setDesc(t("settings.alphaDark.desc"))
       .addSlider((sl) =>
         sl
           .setLimits(0.05, 1, 0.05)
@@ -71,8 +72,8 @@ export class TableColorsSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Maximale Spaltenanzahl")
-      .setDesc("Spaltenfarben wirken bis zu dieser Spalte.")
+      .setName(t("settings.maxCols"))
+      .setDesc(t("settings.maxCols.desc"))
       .addSlider((sl) =>
         sl
           .setLimits(5, 50, 1)
@@ -85,19 +86,16 @@ export class TableColorsSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Abstand über Tabellen")
+      .setName(t("settings.gap"))
       .setDesc(
         createFragment((f) => {
-          f.appendText("Gilt in Live Preview. Obsidian braucht über jeder Tabelle eine Leerzeile und fügt sie beim Schreiben selbst ein; sie bleibt im Markdown immer erhalten.");
+          f.appendText(t("settings.gap.desc"));
           const ul = f.createEl("ul");
-          ul.createEl("li", { text: "Eine Leerzeile: Leerzeile sichtbar, ohne zusätzlichen Platz für die Ziehgriffe. Die Spalten-Griffe liegen an der Oberkante der Kopfzeile." });
-          ul.createEl("li", { text: "Kein Abstand: Tabelle beginnt direkt unter dem Text, wie ein Callout. Die Spalten-Griffe liegen an der Oberkante der Kopfzeile." });
-          ul.createEl("li", { text: "Wie unten: Leerzeile ausgeblendet, darüber bleibt so viel Platz wie unter der Tabelle (für die Ziehgriffe)." });
-          ul.createEl("li", { text: "Custom: Leerzeile ausgeblendet, den Abstand stellst du selbst in Pixeln ein." });
+          for (const gap of TABLE_GAPS) ul.createEl("li", { text: t(`settings.gap.desc.${gap}` as I18nKey) });
         }),
       )
       .addDropdown((dd) => {
-        for (const [value, label] of Object.entries(TABLE_GAP_OPTIONS)) dd.addOption(value, label);
+        for (const gap of TABLE_GAPS) dd.addOption(gap, t(`gap.${gap}` as I18nKey));
         dd.setValue(s.tableGap).onChange(async (v) => {
           s.tableGap = v as TableGap;
           await this.plugin.saveSettings();
@@ -107,8 +105,8 @@ export class TableColorsSettingTab extends PluginSettingTab {
 
     if (s.tableGap === "custom") {
       new Setting(containerEl)
-        .setName("Abstand in Pixeln")
-        .setDesc("Platz zwischen der Zeile über der Tabelle und der Tabelle.")
+        .setName(t("settings.gapCustom"))
+        .setDesc(t("settings.gapCustom.desc"))
         .addSlider((sl) => {
           sl.setLimits(CUSTOM_GAP_MIN, CUSTOM_GAP_MAX, 1)
             .setValue(s.tableGapCustom)
@@ -123,20 +121,17 @@ export class TableColorsSettingTab extends PluginSettingTab {
     }
 
     // ---------- Palette ----------
-    new Setting(containerEl).setName("Palette").setHeading();
+    new Setting(containerEl).setName(t("settings.palette")).setHeading();
 
     new Setting(containerEl)
-      .setName("Palette anwenden")
-      .setDesc(
-        "Ersetzt die Standardfarben (Rot, Blau, …) und die Deckkraft durch die Vorlage. " +
-          "Bestehende Tabellen werden umgefärbt, eigene Farben bleiben erhalten.",
-      )
+      .setName(t("settings.applyPalette"))
+      .setDesc(t("settings.applyPalette.desc"))
       .addDropdown((dd) => {
-        for (const p of PALETTES) dd.addOption(p.id, p.name);
+        for (const p of PALETTES) dd.addOption(p.id, t(`palette.${p.id}` as I18nKey));
         dd.setValue(this.paletteId).onChange((v) => (this.paletteId = v));
       })
       .addButton((b) =>
-        b.setButtonText("Anwenden").onClick(async () => {
+        b.setButtonText(t("settings.apply")).onClick(async () => {
           const p = PALETTES.find((x) => x.id === this.paletteId);
           if (!p) return;
           s.colors = applyPalette(s.colors, p);
@@ -149,12 +144,12 @@ export class TableColorsSettingTab extends PluginSettingTab {
 
     // ---------- Farben ----------
     new Setting(containerEl)
-      .setName("Farben")
-      .setDesc("Links die Farbe für den hellen, rechts für den dunklen Modus.")
+      .setName(t("settings.colors"))
+      .setDesc(t("settings.colors.desc"))
       .setHeading()
       .addButton((b) =>
         b
-          .setButtonText("Farbe hinzufügen")
+          .setButtonText(t("settings.addColor"))
           .setCta()
           .onClick(() =>
             new CustomColorModal(this.app, this.plugin, async () => {
@@ -166,10 +161,12 @@ export class TableColorsSettingTab extends PluginSettingTab {
     s.colors.forEach((color, i) => {
       let paint = () => {};
       const row = new Setting(containerEl)
-        .setDesc(`Marker: cell-${color.id} · row-${color.id} · col-${color.id}`)
-        .addText((t) =>
-          t.setValue(color.label).onChange(async (v) => {
-            color.label = v.trim() || color.id;
+        .setDesc(t("settings.marker", { markers: `cell-${color.id} · row-${color.id} · col-${color.id}` }))
+        .addText((txt) =>
+          txt.setValue(colorLabel(color)).onChange(async (v) => {
+            // Leer oder Standardname -> übersetzten Standardnamen verwenden
+            const name = v.trim();
+            color.label = !name || defaultColorLabels(color.id).includes(name) ? "" : name;
             await this.plugin.saveSettings();
           }),
         )
@@ -190,21 +187,21 @@ export class TableColorsSettingTab extends PluginSettingTab {
         .addExtraButton((b) =>
           b
             .setIcon("arrow-up")
-            .setTooltip("Nach oben")
+            .setTooltip(t("settings.moveUp"))
             .setDisabled(i === 0)
             .onClick(() => this.move(i, -1)),
         )
         .addExtraButton((b) =>
           b
             .setIcon("arrow-down")
-            .setTooltip("Nach unten")
+            .setTooltip(t("settings.moveDown"))
             .setDisabled(i === s.colors.length - 1)
             .onClick(() => this.move(i, 1)),
         )
         .addExtraButton((b) =>
           b
             .setIcon("trash-2")
-            .setTooltip("Löschen – Tabellen mit diesem Marker verlieren ihre Farbe")
+            .setTooltip(t("settings.delete"))
             .onClick(async () => {
               s.colors.splice(i, 1);
               await this.plugin.saveSettings();
@@ -213,8 +210,8 @@ export class TableColorsSettingTab extends PluginSettingTab {
         );
       row.settingEl.addClass("tc-color-setting");
       // Halbtransparente Farbe auf typischem hellem bzw. dunklem Untergrund zeigen
-      const sl = row.nameEl.createSpan({ cls: "tc-swatch", attr: { "aria-label": "Hell" } });
-      const sd = row.nameEl.createSpan({ cls: "tc-swatch", attr: { "aria-label": "Dunkel" } });
+      const sl = row.nameEl.createSpan({ cls: "tc-swatch", attr: { "aria-label": t("settings.light") } });
+      const sd = row.nameEl.createSpan({ cls: "tc-swatch", attr: { "aria-label": t("settings.dark") } });
       paint = () => {
         const light = this.plugin.preview(color, "light");
         const dark = this.plugin.preview(color, "dark");
@@ -223,7 +220,7 @@ export class TableColorsSettingTab extends PluginSettingTab {
       };
       paint();
       this.painters.push(paint);
-      if (color.light.startsWith("theme:")) row.descEl.appendText(" · folgt dem Theme, bis du die Farbe änderst");
+      if (color.light.startsWith("theme:")) row.descEl.appendText(t("settings.followsTheme"));
     });
   }
 

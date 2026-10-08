@@ -1,5 +1,6 @@
 import { App, FuzzyMatch, FuzzySuggestModal, Modal, Setting } from "obsidian";
 import type TableColorsPlugin from "./main";
+import { colorLabel, t } from "./i18n";
 import type { TableColor } from "./palettes";
 import { hexToRgb, themeVar } from "./styles";
 
@@ -34,7 +35,7 @@ export class ColorSuggestModal extends FuzzySuggestModal<Choice> {
     private onChoose: (choice: Choice) => void,
   ) {
     super(app);
-    this.setPlaceholder(`${typeLabel} färben – Farbe wählen`);
+    this.setPlaceholder(t("picker.placeholder", { type: typeLabel }));
   }
 
   getItems(): Choice[] {
@@ -46,13 +47,13 @@ export class ColorSuggestModal extends FuzzySuggestModal<Choice> {
   }
 
   getItemText(c: Choice): string {
-    return c.kind === "color" ? c.color.label : c.kind === "custom" ? "Eigene Farbe…" : "Keine Farbe";
+    return c.kind === "color" ? colorLabel(c.color) : c.kind === "custom" ? t("menu.custom") : t("picker.none");
   }
 
   renderSuggestion(match: FuzzyMatch<Choice>, el: HTMLElement): void {
     const c = match.item;
     if (c.kind === "custom") {
-      el.appendChild(swatchTitle("Eigene Farbe…", "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)"));
+      el.appendChild(swatchTitle(t("menu.custom"), "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)"));
     } else {
       el.appendChild(swatchTitle(this.getItemText(c), c.kind === "color" ? `var(--tc-${c.color.id})` : null));
     }
@@ -75,13 +76,13 @@ export class CustomColorModal extends Modal {
     app: App,
     private plugin: TableColorsPlugin,
     private onCreated: (color: TableColor) => void | Promise<void>,
-    private submitText = "Speichern",
+    private submitText = t("custom.save"),
   ) {
     super(app);
   }
 
   onOpen(): void {
-    this.titleEl.setText("Eigene Farbe");
+    this.titleEl.setText(t("custom.title"));
     this.render();
   }
 
@@ -89,15 +90,15 @@ export class CustomColorModal extends Modal {
     const { contentEl } = this;
     contentEl.empty();
 
-    new Setting(contentEl).setName("Name").addText((t) =>
-      t
-        .setPlaceholder("z. B. Erledigt")
+    new Setting(contentEl).setName(t("custom.name")).addText((txt) =>
+      txt
+        .setPlaceholder(t("custom.namePlaceholder"))
         .setValue(this.label)
         .onChange((v) => (this.label = v)),
     );
 
     new Setting(contentEl)
-      .setName(this.separateDark ? "Farbe (hell)" : "Farbe")
+      .setName(this.separateDark ? t("custom.colorLight") : t("custom.color"))
       .addColorPicker((cp) =>
         cp.setValue(this.light).onChange((v) => {
           this.light = v;
@@ -106,9 +107,9 @@ export class CustomColorModal extends Modal {
       );
 
     new Setting(contentEl)
-      .setName("Eigene Farbe für den Dark Mode")
-      .addToggle((t) =>
-        t.setValue(this.separateDark).onChange((v) => {
+      .setName(t("custom.separateDark"))
+      .addToggle((tg) =>
+        tg.setValue(this.separateDark).onChange((v) => {
           this.separateDark = v;
           if (!v) this.dark = this.light;
           this.render();
@@ -117,18 +118,18 @@ export class CustomColorModal extends Modal {
 
     if (this.separateDark) {
       new Setting(contentEl)
-        .setName("Farbe (dunkel)")
+        .setName(t("custom.colorDark"))
         .addColorPicker((cp) => cp.setValue(this.dark).onChange((v) => (this.dark = v)));
     }
 
     new Setting(contentEl)
-      .addButton((b) => b.setButtonText("Abbrechen").onClick(() => this.close()))
+      .addButton((b) => b.setButtonText(t("custom.cancel")).onClick(() => this.close()))
       .addButton((b) =>
         b
           .setButtonText(this.submitText)
           .setCta()
           .onClick(async () => {
-            const color = await this.plugin.addColor(this.label.trim() || "Eigene Farbe", this.light, this.dark);
+            const color = await this.plugin.addColor(this.label.trim() || t("custom.defaultName"), this.light, this.dark);
             this.close();
             await this.onCreated(color);
           }),
