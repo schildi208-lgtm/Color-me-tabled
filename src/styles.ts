@@ -39,7 +39,7 @@ export function cssColor(value: ColorValue, alpha: number): string {
 
 export function buildCss({ colors, alphaLight, alphaDark, maxCols }: StyleOptions): string {
   const out = [
-    "/* Table Colors – dynamisch erzeugt */",
+    "/* Table Prettifier – dynamisch erzeugt */",
     "body.theme-light {",
     ...colors.map((c) => `  --tc-${c.id}: ${cssColor(c.light, alphaLight)};`),
     "}",

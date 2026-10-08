@@ -1,6 +1,6 @@
 {
 	"id": "table-colors",
-	"name": "Table Colors",
+	"name": "Table Prettifier",
 	"version": "0.3.0",
 	"minAppVersion": "1.5.0",
 	"description": "Zellen, Zeilen und Spalten von Tabellen per Kontextmenü und Befehl einfärben.",

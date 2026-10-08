@@ -1,4 +1,4 @@
-# Table Colors
+# Table Prettifier
 
 Obsidian-Plugin zum Einfärben von **Zellen, Zeilen und Spalten** in Markdown-Tabellen – per Rechtsklick-Menü, Befehl/Tastenkürzel oder direkt im Quelltext.
 
@@ -11,7 +11,7 @@ Rechtsklick auf eine Tabellenzelle → **Zelle färben**, **Zeile färben** oder
 
 ### Befehle und Tastenkürzel
 
-In der Befehlspalette nach „Table Colors“ suchen. Unter *Einstellungen → Tastenkürzel* lässt sich jedem Befehl ein Shortcut zuweisen:
+In der Befehlspalette nach „Table Prettifier“ suchen. Unter *Einstellungen → Tastenkürzel* lässt sich jedem Befehl ein Shortcut zuweisen:
 
 | Befehl | Wirkung |
 | --- | --- |
@@ -42,7 +42,7 @@ Standardfarben: `red`, `orange`, `yellow`, `green`, `cyan`, `blue`, `purple`, `p
 
 ## Farben anpassen
 
-Unter *Einstellungen → Table Colors*:
+Unter *Einstellungen → Table Prettifier*:
 
 - **Light & Dark Mode** – jede Farbe hat einen eigenen Wert für den hellen und den dunklen Modus, dazu je eine eigene Deckkraft. Die Vorschau zeigt beide Varianten.
 - **Paletten** – Vorlagen *Theme (Standard)*, *Pastell*, *Kräftig* und *Farbenblind-freundlich (Okabe-Ito)*. Alle nutzen dieselben IDs, ein Palettenwechsel färbt also bestehende Tabellen um, ohne den Markdown-Text zu ändern. Eigene Farben bleiben erhalten.
@@ -66,8 +66,8 @@ Eigene Farben sind in den Plugin-Einstellungen des Vaults gespeichert – in ein
 ### Manuell
 
 1. Beim neuesten [Release](../../releases/latest) die Dateien `main.js`, `manifest.json` und `styles.css` herunterladen.
-2. Im Vault den Ordner `.obsidian/plugins/table-colors/` anlegen und die drei Dateien hineinlegen.
-3. Obsidian neu laden und unter *Einstellungen → Community-Plugins* „Table Colors“ aktivieren.
+2. Im Vault den Ordner `.obsidian/plugins/table-colors/` anlegen und die drei Dateien hineinlegen. Der Ordner muss so heißen wie die Plugin-ID `table-colors` (der Name stammt aus der Zeit vor der Umbenennung und bleibt aus Kompatibilitätsgründen).
+3. Obsidian neu laden und unter *Einstellungen → Community-Plugins* „Table Prettifier“ aktivieren.
 
 ### Mit BRAT
 
