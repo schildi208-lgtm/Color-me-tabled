@@ -47,7 +47,12 @@ export default class TableColorsPlugin extends Plugin {
     // Farb-CSS in jedes Fenster schreiben (Hauptfenster + Popouts)
     this.injectStyles(document);
     this.registerEvent(this.app.workspace.on("window-open", (win) => this.injectStyles(win.doc)));
-    this.register(() => this.styleEls.forEach((el) => el.remove()));
+    this.register(() =>
+      this.styleEls.forEach((el) => {
+        el.ownerDocument.body.removeClass("tc-compact-tables");
+        el.remove();
+      }),
+    );
 
     // Leseansicht: Startzeile jeder Tabelle merken, um sie im Quelltext wiederzufinden
     this.registerMarkdownPostProcessor((el, ctx) => {
@@ -142,13 +147,17 @@ export default class TableColorsPlugin extends Plugin {
   private injectStyles(doc: Document) {
     const el = doc.head.createEl("style", { attr: { id: "table-colors-dynamic" } });
     el.textContent = buildCss(this.settings);
+    doc.body.toggleClass("tc-compact-tables", this.settings.compactTables);
     this.styleEls.push(el);
   }
 
   private refreshStyles() {
     const css = buildCss(this.settings);
     this.styleEls = this.styleEls.filter((el) => el.isConnected);
-    for (const el of this.styleEls) el.textContent = css;
+    for (const el of this.styleEls) {
+      el.textContent = css;
+      el.ownerDocument.body.toggleClass("tc-compact-tables", this.settings.compactTables);
+    }
   }
 
   /** Hintergrund einer Farbe für einen bestimmten Modus (für Vorschauen). */

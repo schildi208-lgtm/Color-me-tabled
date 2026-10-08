@@ -49,6 +49,8 @@ Unter *Einstellungen → Table Colors*:
 - **Color Picker** – jede Farbe per Picker ändern, umbenennen, sortieren oder löschen; „Farbe hinzufügen“ legt neue an.
 - **Eigene Farbe direkt in der Tabelle** – im Rechtsklick-Menü bzw. in der Farbauswahl „Eigene Farbe…“ wählen: Farbe picken, benennen, anwenden. Sie wird dabei in der Palette gespeichert.
 
+Außerdem: **Kompakte Tabellen** (standardmäßig an) entfernt in Live Preview den Abstand, den Obsidian über Tabellen für die Spalten-Ziehgriffe reserviert. Tabellen beginnen dann wie Callouts direkt unter der vorherigen Zeile; die Griffe liegen als schmale Leiste an der Oberkante der Kopfzeile.
+
 Die Farben der Palette *Theme* folgen dem aktiven Obsidian-Theme, bis man sie im Picker ändert.
 Eigene Farben sind in den Plugin-Einstellungen des Vaults gespeichert – in einem anderen Vault wirken ihre Marker erst, wenn dort eine Farbe mit derselben ID existiert.
 

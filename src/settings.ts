@@ -8,6 +8,7 @@ export interface TableColorsSettings {
   alphaLight: number;
   alphaDark: number;
   maxCols: number;
+  compactTables: boolean;
 }
 
 export const DEFAULT_SETTINGS: TableColorsSettings = {
@@ -15,6 +16,7 @@ export const DEFAULT_SETTINGS: TableColorsSettings = {
   alphaLight: PALETTES[0].alphaLight,
   alphaDark: PALETTES[0].alphaDark,
   maxCols: 20,
+  compactTables: true,
 };
 
 export class TableColorsSettingTab extends PluginSettingTab {
@@ -76,6 +78,19 @@ export class TableColorsSettingTab extends PluginSettingTab {
             s.maxCols = v;
             await this.plugin.saveSettings();
           }),
+      );
+
+    new Setting(containerEl)
+      .setName("Kompakte Tabellen")
+      .setDesc(
+        "Entfernt in Live Preview den Abstand über Tabellen, sodass sie wie Callouts direkt " +
+          "unter der vorherigen Zeile beginnen. Die Spalten-Ziehgriffe liegen dann an der Oberkante der Kopfzeile.",
+      )
+      .addToggle((t) =>
+        t.setValue(s.compactTables).onChange(async (v) => {
+          s.compactTables = v;
+          await this.plugin.saveSettings();
+        }),
       );
 
     // ---------- Palette ----------

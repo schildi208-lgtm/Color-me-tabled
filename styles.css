@@ -23,3 +23,19 @@
   height: 1.4em;
   margin-right: 0.3em;
 }
+
+/* Kompakte Tabellen (Live Preview): Obsidian reserviert über jeder Tabelle Platz
+ * (--table-drag-handle-size) für die Spalten-Ziehgriffe. Ohne diesen Platz beginnt die
+ * Tabelle direkt unter der vorherigen Zeile – wie Callouts. Die Spalten-Griffe wandern
+ * dafür als schmale Leiste an die Oberkante der Kopfzelle (erscheinen weiter beim Hovern). */
+body.tc-compact-tables .markdown-source-view.mod-cm6 .cm-table-widget:not(.is-loading) {
+  padding-top: 0;
+}
+body.tc-compact-tables .markdown-source-view.mod-cm6 .cm-table-widget .table-col-drag-handle {
+  inset-block-end: auto;
+  inset-block-start: 0;
+  height: var(--size-4-2);
+  overflow: hidden;
+  border-radius: 0;
+  z-index: 1;
+}
