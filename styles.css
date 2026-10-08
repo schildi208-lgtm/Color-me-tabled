@@ -1,0 +1,25 @@
+/* Table Colors – statische Styles.
+ * Die eigentlichen Tabellenfarben erzeugt das Plugin zur Laufzeit aus den Einstellungen
+ * (<style id="table-colors-dynamic">), getrennt für Light und Dark Mode. */
+
+/* Farbmuster in Menü, Farbauswahl und Einstellungen */
+.tc-swatch {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.5em;
+  vertical-align: -0.1em;
+  border-radius: 3px;
+  border: 1px solid var(--background-modifier-border);
+}
+
+.tc-swatch-none {
+  background: repeating-linear-gradient(45deg, transparent 0 3px, var(--background-modifier-border) 3px 4px);
+}
+
+/* Einstellungen: Vorschau hell/dunkel vor dem Namen */
+.tc-color-setting .tc-swatch {
+  width: 1.4em;
+  height: 1.4em;
+  margin-right: 0.3em;
+}
