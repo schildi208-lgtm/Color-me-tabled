@@ -2,14 +2,16 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import type TableColorsPlugin from "./main";
 import { PALETTES, TableColor, applyPalette } from "./palettes";
 import { CustomColorModal, toHex } from "./modals";
+import { CUSTOM_GAP_DEFAULT, CUSTOM_GAP_MAX, CUSTOM_GAP_MIN, TABLE_GAP_OPTIONS, TableGap } from "./tableGap";
 
 export interface TableColorsSettings {
   colors: TableColor[];
   alphaLight: number;
   alphaDark: number;
   maxCols: number;
-  compactTables: boolean;
-  hideTableGap: boolean;
+  tableGap: TableGap;
+  /** Abstand in Pixeln für tableGap = "custom". */
+  tableGapCustom: number;
 }
 
 export const DEFAULT_SETTINGS: TableColorsSettings = {
@@ -17,8 +19,8 @@ export const DEFAULT_SETTINGS: TableColorsSettings = {
   alphaLight: PALETTES[0].alphaLight,
   alphaDark: PALETTES[0].alphaDark,
   maxCols: 20,
-  compactTables: true,
-  hideTableGap: true,
+  tableGap: "none",
+  tableGapCustom: CUSTOM_GAP_DEFAULT,
 };
 
 export class TableColorsSettingTab extends PluginSettingTab {
@@ -83,30 +85,42 @@ export class TableColorsSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Kompakte Tabellen")
+      .setName("Abstand über Tabellen")
       .setDesc(
-        "Entfernt in Live Preview den Abstand über Tabellen, sodass sie wie Callouts direkt " +
-          "unter der vorherigen Zeile beginnen. Die Spalten-Ziehgriffe liegen dann an der Oberkante der Kopfzeile.",
-      )
-      .addToggle((t) =>
-        t.setValue(s.compactTables).onChange(async (v) => {
-          s.compactTables = v;
-          await this.plugin.saveSettings();
+        createFragment((f) => {
+          f.appendText("Gilt in Live Preview. Obsidian braucht über jeder Tabelle eine Leerzeile und fügt sie beim Schreiben selbst ein; sie bleibt im Markdown immer erhalten.");
+          const ul = f.createEl("ul");
+          ul.createEl("li", { text: "Eine Leerzeile: Leerzeile sichtbar, ohne zusätzlichen Platz für die Ziehgriffe. Die Spalten-Griffe liegen an der Oberkante der Kopfzeile." });
+          ul.createEl("li", { text: "Kein Abstand: Tabelle beginnt direkt unter dem Text, wie ein Callout. Die Spalten-Griffe liegen an der Oberkante der Kopfzeile." });
+          ul.createEl("li", { text: "Wie unten: Leerzeile ausgeblendet, darüber bleibt so viel Platz wie unter der Tabelle (für die Ziehgriffe)." });
+          ul.createEl("li", { text: "Custom: Leerzeile ausgeblendet, den Abstand stellst du selbst in Pixeln ein." });
         }),
-      );
+      )
+      .addDropdown((dd) => {
+        for (const [value, label] of Object.entries(TABLE_GAP_OPTIONS)) dd.addOption(value, label);
+        dd.setValue(s.tableGap).onChange(async (v) => {
+          s.tableGap = v as TableGap;
+          await this.plugin.saveSettings();
+          this.display(); // Regler für „Custom“ ein-/ausblenden
+        });
+      });
 
-    new Setting(containerEl)
-      .setName("Leerzeile über Tabellen ausblenden")
-      .setDesc(
-        "Obsidian braucht über jeder Tabelle eine Leerzeile und fügt sie beim Schreiben automatisch ein. " +
-          "Sie bleibt im Markdown erhalten, wird in Live Preview aber ausgeblendet, solange der Cursor nicht darin steht.",
-      )
-      .addToggle((t) =>
-        t.setValue(s.hideTableGap).onChange(async (v) => {
-          s.hideTableGap = v;
-          await this.plugin.saveSettings();
-        }),
-      );
+    if (s.tableGap === "custom") {
+      new Setting(containerEl)
+        .setName("Abstand in Pixeln")
+        .setDesc("Platz zwischen der Zeile über der Tabelle und der Tabelle.")
+        .addSlider((sl) => {
+          sl.setLimits(CUSTOM_GAP_MIN, CUSTOM_GAP_MAX, 1)
+            .setValue(s.tableGapCustom)
+            .setDynamicTooltip()
+            .onChange(async (v) => {
+              s.tableGapCustom = v;
+              await this.plugin.saveSettings();
+            });
+          // Live beim Ziehen aktualisieren (setInstant gibt es erst in neueren Obsidian-Versionen)
+          if (typeof sl.setInstant === "function") sl.setInstant(true);
+        });
+    }
 
     // ---------- Palette ----------
     new Setting(containerEl).setName("Palette").setHeading();

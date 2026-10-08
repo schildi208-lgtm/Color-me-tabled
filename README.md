@@ -49,9 +49,14 @@ Unter *Einstellungen → Table Colors*:
 - **Color Picker** – jede Farbe per Picker ändern, umbenennen, sortieren oder löschen; „Farbe hinzufügen“ legt neue an.
 - **Eigene Farbe direkt in der Tabelle** – im Rechtsklick-Menü bzw. in der Farbauswahl „Eigene Farbe…“ wählen: Farbe picken, benennen, anwenden. Sie wird dabei in der Palette gespeichert.
 
-Außerdem: **Kompakte Tabellen** (standardmäßig an) entfernt in Live Preview den Abstand, den Obsidian über Tabellen für die Spalten-Ziehgriffe reserviert. Tabellen beginnen dann wie Callouts direkt unter der vorherigen Zeile; die Griffe liegen als schmale Leiste an der Oberkante der Kopfzeile.
+**Abstand über Tabellen** (Live Preview): Obsidian erkennt Tabellen nur mit einer Leerzeile davor und fügt sie beim Schreiben automatisch ein. Die Zeile bleibt im Markdown immer erhalten; per Dropdown wählst du, wie es aussieht:
 
-**Leerzeile über Tabellen ausblenden** (standardmäßig an): Obsidian erkennt Tabellen nur mit einer Leerzeile davor und fügt sie beim Schreiben automatisch ein. Das Plugin lässt sie im Markdown stehen, blendet sie in Live Preview aber aus, solange der Cursor nicht darin steht.
+| Option | Wirkung |
+| --- | --- |
+| Eine Leerzeile | Leerzeile sichtbar, ohne zusätzlichen Platz darüber; Spalten-Griffe an der Oberkante der Kopfzeile |
+| Kein Abstand *(Standard)* | Tabelle beginnt direkt unter dem Text, wie ein Callout; Spalten-Griffe an der Oberkante der Kopfzeile |
+| Wie unten | Leerzeile ausgeblendet, darüber so viel Platz wie unter der Tabelle (für die Ziehgriffe) |
+| Custom | Leerzeile ausgeblendet, Abstand per Regler in Pixeln (0–64 px) |
 
 Die Farben der Palette *Theme* folgen dem aktiven Obsidian-Theme, bis man sie im Picker ändert.
 Eigene Farben sind in den Plugin-Einstellungen des Vaults gespeichert – in einem anderen Vault wirken ihre Marker erst, wenn dort eine Farbe mit derselben ID existiert.

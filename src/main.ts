@@ -2,6 +2,7 @@ import { Editor, MarkdownFileInfo, MarkdownView, Menu, MenuItem, Notice, Plugin 
 import { Choice, ColorSuggestModal, CustomColorModal, swatchTitle } from "./modals";
 import { TableColor, makeId } from "./palettes";
 import { DEFAULT_SETTINGS, TableColorsSettingTab, TableColorsSettings } from "./settings";
+import { TABLE_GAP_OPTIONS, TableGap, migrateTableGap } from "./tableGap";
 import { buildCss, cssColor } from "./styles";
 import { Action, MarkerType, TableLoc, cellRanges, computeChanges, findTable, isRow } from "./table";
 
@@ -130,11 +131,15 @@ export default class TableColorsPlugin extends Plugin {
   // ---------- Einstellungen & CSS ----------
 
   async loadSettings() {
-    const data = (await this.loadData()) as Partial<TableColorsSettings> | null;
+    const data = ((await this.loadData()) ?? {}) as Partial<TableColorsSettings> & Record<string, unknown>;
+    const tableGap = migrateTableGap(data) ?? DEFAULT_SETTINGS.tableGap;
+    delete data.compactTables;
+    delete data.hideTableGap;
     this.settings = {
       ...DEFAULT_SETTINGS,
       ...data,
-      colors: (data?.colors ?? DEFAULT_SETTINGS.colors).map((c) => ({ ...c })),
+      tableGap,
+      colors: (data.colors ?? DEFAULT_SETTINGS.colors).map((c) => ({ ...c })),
     };
   }
 
@@ -162,8 +167,11 @@ export default class TableColorsPlugin extends Plugin {
 
   /** Schalter aus den Einstellungen als Klassen am <body>, damit styles.css sie nutzen kann. */
   private applyBodyClasses(doc: Document, enabled = true) {
-    doc.body.toggleClass("tc-compact-tables", enabled && this.settings.compactTables);
-    doc.body.toggleClass("tc-hide-table-gap", enabled && this.settings.hideTableGap);
+    for (const gap of Object.keys(TABLE_GAP_OPTIONS) as TableGap[]) {
+      doc.body.toggleClass(`tc-gap-${gap}`, enabled && this.settings.tableGap === gap);
+    }
+    if (enabled) doc.body.style.setProperty("--tc-table-gap-custom", `${this.settings.tableGapCustom}px`);
+    else doc.body.style.removeProperty("--tc-table-gap-custom");
   }
 
   /** Hintergrund einer Farbe für einen bestimmten Modus (für Vorschauen). */

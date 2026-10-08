@@ -24,14 +24,30 @@
   margin-right: 0.3em;
 }
 
-/* Kompakte Tabellen (Live Preview): Obsidian reserviert über jeder Tabelle Platz
- * (--table-drag-handle-size) für die Spalten-Ziehgriffe. Ohne diesen Platz beginnt die
- * Tabelle direkt unter der vorherigen Zeile – wie Callouts. Die Spalten-Griffe wandern
- * dafür als schmale Leiste an die Oberkante der Kopfzelle (erscheinen weiter beim Hovern). */
-body.tc-compact-tables .markdown-source-view.mod-cm6 .cm-table-widget:not(.is-loading) {
+/* Abstand über Tabellen (Live Preview), gesteuert über body.tc-gap-<option>:
+ *   blank-line – Leerzeile sichtbar, oberes Polster entfernen (Abstand = genau eine Zeile)
+ *   none       – Leerzeile ausblenden + oberes Polster entfernen
+ *   handle     – Leerzeile ausblenden, oberes Polster (= Platz für Ziehgriffe, wie unten) behalten
+ *   custom     – Leerzeile ausblenden, oberes Polster = --tc-table-gap-custom (Regler)
+ *
+ * Obsidian erkennt eine Tabelle nur mit einer Leerzeile davor und fügt sie beim Schreiben
+ * automatisch ein. Die Zeile bleibt im Markdown, wird aber auf Höhe 0 gesetzt – außer der
+ * Cursor steht darin. */
+body:is(.tc-gap-none, .tc-gap-handle, .tc-gap-custom) .markdown-source-view.is-live-preview .cm-content > .cm-line:has(> br):has(+ .cm-table-widget):not(.cm-active, .cm-activeLine) {
+  height: 0;
+  min-height: 0;
+  margin-block: 0;
+  padding-block: 0;
+  overflow: hidden;
+}
+
+/* Obsidian reserviert über jeder Tabelle --table-drag-handle-size für die Spalten-Ziehgriffe.
+ * Ohne dieses Polster wandern die Griffe als schmale Leiste an die Oberkante der Kopfzelle
+ * (sie erscheinen weiter beim Hovern). */
+body:is(.tc-gap-none, .tc-gap-blank-line) .markdown-source-view.mod-cm6 .cm-table-widget:not(.is-loading) {
   padding-top: 0;
 }
-body.tc-compact-tables .markdown-source-view.mod-cm6 .cm-table-widget .table-col-drag-handle {
+body:is(.tc-gap-none, .tc-gap-blank-line, .tc-gap-custom) .markdown-source-view.mod-cm6 .cm-table-widget .table-col-drag-handle {
   inset-block-end: auto;
   inset-block-start: 0;
   height: var(--size-4-2);
@@ -39,14 +55,6 @@ body.tc-compact-tables .markdown-source-view.mod-cm6 .cm-table-widget .table-col
   border-radius: 0;
   z-index: 1;
 }
-
-/* Leerzeile über Tabellen ausblenden (Live Preview): Obsidian erkennt eine Tabelle nur mit
- * einer Leerzeile davor und fügt sie beim Schreiben automatisch ein. Die Zeile bleibt im
- * Markdown erhalten, wird aber auf Höhe 0 gesetzt – außer der Cursor steht darin. */
-body.tc-hide-table-gap .markdown-source-view.is-live-preview .cm-content > .cm-line:has(> br):has(+ .cm-table-widget):not(.cm-active, .cm-activeLine) {
-  height: 0;
-  min-height: 0;
-  margin-block: 0;
-  padding-block: 0;
-  overflow: hidden;
+body.tc-gap-custom .markdown-source-view.mod-cm6 .cm-table-widget:not(.is-loading) {
+  padding-top: var(--tc-table-gap-custom, 0px);
 }
